@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Website - Login/Signup</title>
+    <link rel="stylesheet" href="/travel.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/izitoast/dist/css/iziToast.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="tab-buttons">
+            <button class="tab-btn active" onclick="showForm('login')">Login</button>
+            <button class="tab-btn" onclick="showForm('signup')">Sign Up</button>
+        </div>
+
+        <form id="login-form">
+            <div class="form-group">
+                <label for="login-email">Email</label>
+                <input type="email" id="login-email"  placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password"  placeholder="Enter your password">
+            </div>
+            <button type="submit" class="submit-btn">Login</button>
+            <div class="forgot-password">
+                <a href="#">Forgot Password?</a>
+            </div>
+        </form>
+
+        <form id="signup-form" style="display: none;">
+            <div class="form-group">
+                <label for="signup-name">Full Name</label>
+                <input type="text" id="signup-name"  placeholder="Enter your full name">
+            </div>
+            <div class="form-group">
+                <label for="signup-email">Email</label>
+                <input type="email" id="signup-email"  placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label for="signup-password">Password</label>
+                <input type="password" id="signup-password" placeholder="Create a password">
+            </div>
+            <div class="form-group">
+                <label for="signup-confirm-password">Confirm Password</label>
+                <input type="password" id="signup-confirm-password"  placeholder="Confirm your password">
+            </div>
+            <button type="submit" class="submit-btn" id="submit-signup" >Sign Up</button>
+        </form>
+    </div>
+
+    <script>
+        function showForm(formType) {
+            const loginForm = document.getElementById('login-form');
+            const signupForm = document.getElementById('signup-form');
+            const tabs = document.querySelectorAll('.tab-btn');
+            
+            if (formType === 'login') {
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+                tabs[0].classList.add('active');
+                tabs[1].classList.remove('active');
+            } else {
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+                tabs[0].classList.remove('active');
+                tabs[1].classList.add('active');
+            }
+        }
+  
+     document.getElementById("signup-form").addEventListener("submit", async function (e) {
+                        e.preventDefault();
+
+            const username = document.getElementById("signup-name").value;
+            const email = document.getElementById("signup-email").value;
+            const password = document.getElementById("signup-password").value;
+            const confirmpassword = document.getElementById("signup-confirm-password").value;
+
+
+    
+
+        if (!email || !username || !password || !confirmpassword) {
+        iziToast.error({
+            title: "Error",
+            message: "All fields are required!",
+            position: "topRight"
+        });
+        return;
+    }
+
+    if (password.length < 6) {
+        iziToast.warning({
+            title: "Warning",
+            message: "Password must be at least 6 characters long.",
+            position: "topRight"
+        });
+        return;
+    }
+
+    if (password !== confirmpassword) {
+        iziToast.error({
+            title: "Error",
+            message: "Passwords do not match!",
+            position: "topRight"
+        });
+        return;
+    }
+
+    const signupBody = {
+            username:username,
+            email:email,
+            password
+        }
+
+
+
+        fetch('/signup', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(signupBody),
+    }).then((response)=>{
+       return response.json()
+    }).then((data)=>{
+        if(data.success){
+            Swal.fire({
+        title: "Success!",
+        text: data.message, // Dynamic success message
+        icon: "success",
+        confirmButtonText: "OK"
+    }).then(()=>{
+        window.location.href = data.redirect
+    })
+        }else{
+
+            iziToast.error({
+            title: "Error",
+            message: data.message,
+            position: "topRight"
+        });        
+    }
+    }).catch((err)=>{
+        console.log(err)
+    })
+    
+        
+    })
+
+
+
+
+    document.getElementById("login-form").addEventListener("submit",(e)=>{
+        e.preventDefault();
+        const email = document.getElementById("login-email").value;
+        const password = document.getElementById("login-password").value;
+        
+        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+
+        if(!email ||  !password){
+        iziToast.error({
+            title: "Error",
+            message: "All fields are required!",
+            position: "topRight"
+        })
+        return;        
+    }else if(!emailPattern.test(email)){
+        iziToast.error({
+            title: "Error",
+            message: "Please enter a valid email address!",
+            position: "topRight"
+        })
+        return;   
+    }else if(password.length < 6){
+        iziToast.warning({
+            title: "Warning",
+            message: "Password must be at least 6 characters long.",
+            position: "topRight"
+        });
+        return;       
+ }
+         
+       const loginBody = {
+         email,
+         password
+       }
+
+        fetch("/login",{method:'POST',  headers: {
+            'Content-Type': 'application/json',
+        },body:JSON.stringify(loginBody)}).then((response)=>{
+            return response.json()
+        }).then((data)=>{
+            if(data.success){
+         Swal.fire({
+        title: "Success!",
+        text: data.message, // Dynamic success message
+        icon: "success",
+        confirmButtonText: "OK"
+    }).then(()=>{
+        window.location.href = data.redirect
+    })
+            }else{
+                iziToast.error({
+            title: "Error",
+            message: data.message,
+            position: "topRight"
+        });    
+                }
+        }).catch((err)=>{
+            console.log(err)
+        })
+
+        })
+
+      
+
+    </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/izitoast/dist/js/iziToast.min.js"></script>
+</body>
+</html>
