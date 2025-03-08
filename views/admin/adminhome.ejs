@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Dashboard</title>
+    <link rel="stylesheet" href="/adminall.css">
+</head>
+<body>
+    <div class="dashboard">
+        <%- include('../partials/sidebar') %>
+        <div class="main-content">
+            <div class="header">
+                <div class="page-title">Explore Destinations</div>
+                <div class="user-info">
+                    <div class="user-image">JT</div>
+                    <div>Jane Traveler</div>
+                </div>
+            </div>
+            
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Search destinations, hotels, or activities...">
+            </div>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-title">TOTAL DESTINATIONS</div>
+                    <div class="stat-value">245</div>
+                    <div>12 newly added this month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">HOTELS & RESORTS</div>
+                    <div class="stat-value">1,876</div>
+                    <div>85% occupancy rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">TOTAL BOOKINGS</div>
+                    <div class="stat-value">3,542</div>
+                    <div>+18% from last month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">CUSTOMER SATISFACTION</div>
+                    <div class="stat-value">4.8/5</div>
+                    <div>Based on 12.4K reviews</div>
+                </div>
+            </div>
+            
+            <div class="section-title">Featured Destinations</div>
+            <div class="featured-destinations">
+                <div class="destination-card">
+                    <div class="destination-image">Bali Beach Image</div>
+                    <div class="destination-details">
+                        <div class="destination-name">Bali Paradise Resort</div>
+                        <div class="destination-location">Seminyak, Bali, Indonesia</div>
+                        <div class="destination-rating">★★★★★ (4.9)</div>
+                        <div class="destination-price">From $120/night</div>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <div class="destination-image">Santorini View Image</div>
+                    <div class="destination-details">
+                        <div class="destination-name">Santorini Blue Dome</div>
+                        <div class="destination-location">Oia, Santorini, Greece</div>
+                        <div class="destination-rating">★★★★★ (4.8)</div>
+                        <div class="destination-price">From $180/night</div>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <div class="destination-image">Maldives Resort Image</div>
+                    <div class="destination-details">
+                        <div class="destination-name">Maldives Water Villa</div>
+                        <div class="destination-location">North Malé Atoll, Maldives</div>
+                        <div class="destination-rating">★★★★★ (5.0)</div>
+                        <div class="destination-price">From $350/night</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section-title">Available Hotels</div>
+            <div class="hotels-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Hotel Name</th>
+                            <th>Location</th>
+                            <th>Rating</th>
+                            <th>Price</th>
+                            <th>Availability</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Seaside Resort & Spa</td>
+                            <td>Cancun, Mexico</td>
+                            <td>★★★★☆ (4.2)</td>
+                            <td>$145/night</td>
+                            <td><span class="status available">Available</span></td>
+                        </tr>
+                        <tr>
+                            <td>Mountain View Lodge</td>
+                            <td>Aspen, Colorado</td>
+                            <td>★★★★★ (4.7)</td>
+                            <td>$210/night</td>
+                            <td><span class="status limited">Limited</span></td>
+                        </tr>
+                        <tr>
+                            <td>Urban Luxury Hotel</td>
+                            <td>Paris, France</td>
+                            <td>★★★★★ (4.8)</td>
+                            <td>$275/night</td>
+                            <td><span class

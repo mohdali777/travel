@@ -3,6 +3,7 @@ const app = express()
 const path = require("path")
 const monogos = require("./db/connect")
 const userRoutes = require("./routes/user")
+const adminRoutes = require("./routes/admin")
 
 
 app.use(express.json());
@@ -12,6 +13,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 app.use("/",userRoutes)
+app.use("/admin",adminRoutes)
 
 
 app.listen(3000,()=>{

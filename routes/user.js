@@ -30,7 +30,7 @@ router.post("/signup", async (req,res)=>{
         password
     })
    await newUser.save()
-   return res.status(200).json({success:true,message:"user added Successfully",redirect:"/home"})    
+   return res.status(200).json({success:true,message:"user added Successfully",redirect:"/login"})    
 
 })
 
