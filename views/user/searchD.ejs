@@ -1,0 +1,631 @@
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            color: #333;
+            line-height: 1.6;
+            background-color: #f5f7fa;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header styles */
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0073cc;
+        }
+        
+        .logo span {
+            color: #ff6b6b;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-links a {
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #0073cc;
+        }
+        
+        .cta-button {
+            background-color: #0073cc;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        
+        .cta-button:hover {
+            background-color: #005ba3;
+        }
+        
+        /* Search header */
+        .search-header {
+            background-color: #fff;
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .search-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-input {
+            display: flex;
+            flex: 1;
+            max-width: 600px;
+        }
+        
+        .search-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px 0 0 5px;
+            font-size: 16px;
+        }
+        
+        .search-input button {
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .search-details {
+            margin-left: 20px;
+        }
+        
+        .search-details p {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .search-details strong {
+            color: #333;
+        }
+        
+        /* Main content */
+        .main-content {
+            display: flex;
+            padding: 40px 0;
+            gap: 30px;
+        }
+        
+        /* Filters sidebar */
+        .filters {
+            width: 280px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            align-self: flex-start;
+            position: sticky;
+            top: 90px;
+        }
+        
+        .filters h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .filter-section {
+            margin-bottom: 25px;
+        }
+        
+        .filter-section h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: #444;
+        }
+        
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+        }
+        
+        .checkbox-option input {
+            margin-right: 10px;
+        }
+        
+        .checkbox-option label {
+            font-size: 14px;
+            color: #555;
+        }
+        
+        .price-range {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .price-range input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+        }
+        
+        .slider-container {
+            margin: 15px 0;
+        }
+        
+        .slider {
+            width: 100%;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .filter-buttons button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .apply-filters {
+            background-color: #0073cc;
+            color: white;
+        }
+        
+        .reset-filters {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        /* Results section */
+        .results {
+            flex: 1;
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .results-count {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .sort-options {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sort-options label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .sort-options select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: #f9f9f9;
+        }
+        
+        .view-options {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .view-option {
+            padding: 8px 10px;
+            background-color: #f0f0f0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .view-option.active {
+            background-color: #0073cc;
+            color: white;
+        }
+        
+        /* Results grid */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .result-card {
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-image {
+            position: relative;
+            height: 180px;
+        }
+        
+        .result-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .result-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #ff6b6b;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .result-save {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #666;
+            font-size: 18px;
+        }
+        
+        .result-content {
+            padding: 15px;
+        }
+        
+        .result-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .stars {
+            color: #ffc107;
+            margin-right: 5px;
+            font-size: 14px;
+        }
+        
+        .review-count {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .result-title {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .result-location {
+            display: flex;
+            align-items: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .location-icon {
+            margin-right: 5px;
+        }
+        
+        .result-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .feature-tag {
+            background-color: #f0f5ff;
+            color: #0073cc;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .result-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+        
+        .price {
+            font-weight: 700;
+            font-size: 20px;
+            color: #0073cc;
+        }
+        
+        .price-details {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .view-deal {
+            background-color: #0073cc;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 30px;
+        }
+        
+        .page-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .page-btn:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .page-btn.active {
+            background-color: #0073cc;
+            color: white;
+            border-color: #0073cc;
+        }
+        
+        .page-btn.prev, .page-btn.next {
+            width: auto;
+            padding: 0 15px;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #222;
+            color: #fff;
+            padding: 60px 0 20px;
+            margin-top: 40px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: #bbb;
+            transition: color 0.3s;
+        }
+        
+        .footer-column ul li a:hover {
+            color: #fff;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            color: #bbb;
+            font-size: 14px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .filters {
+                width: 100%;
+                position: static;
+                margin-bottom: 20px;
+            }
+            
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .sort-options {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .search-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .search-input {
+                width: 100%;
+                max-width: none;
+            }
+            
+            .search-details {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <!-- Header -->
+    <%- include('../partials/users/header') %>
+
+
+    <body>
+        
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content">
+            <!-- Filters Sidebar -->
+    
+            <!-- Results Section -->
+            <div class="results">
+                <div class="results-header">
+                    <div class="results-count"><%= places.length %> Results Found</div>
+                </div>
+    
+                <!-- Results Grid -->
+                <div class="results-grid">
+                    <% if (places.length > 0) { %>
+                        <% places.forEach((place) => { %>
+                            <div class="result-card">
+                                <div class="result-image">
+                                    <img src="./<%= place.hotelImages[0] %>" alt="Luxury Villa in Ubud">
+                                    <div class="result-badge">20% OFF</div>
+                                    <div class="result-save">♡</div>
+                                </div>
+                                <div class="result-content">
+                                    <div class="result-rating">
+                                        <span class="stars">★★★★★</span>
+                                        <span class="review-count">(243 reviews)</span>
+                                    </div>
+                                    <h3 class="result-title"><%= place.packageName %></h3>
+                                    <div class="result-location">
+                                        <span class="location-icon">📍</span>
+                                        <span><%= place.Country %>, <%= place.state %></span>
+                                    </div>
+                                    <div class="result-features">
+                                        <span class="feature-tag"><%= place.hotelName %></span>
+                                        <span class="feature-tag">Rice Field View</span>
+                                        <span class="feature-tag">Breakfast</span>
+                                    </div>
+                                    <div class="result-price">
+                                        <div>
+                                            <div class="price">$<%= place.price %></div>
+                                            <div class="price-details">per person</div>
+                                        </div>
+                                        <a href="/packageD/<%= place._id %>" class="view-deal">View Deal</a>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <div class="no-results">
+                            <p>No results found. Try adjusting your filters or search criteria.</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+ <%- include('../partials/users/footer') %>
+    

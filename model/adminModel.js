@@ -48,17 +48,20 @@ const packageSchema = new mongoose.Schema({
     },
     tourplaces:[
         {
-         place:{
+          placeName:{
             type:String,
             required:true
          },
-         description:{
+         placeDesc:{
             type:String,
             required:true
+         },
+         placeImagesss:{
+            type:[String],
          },
          images:{
-            type:[String],
-         } 
+          type:[String],
+         }
         }
     ],
     hotelName:{
@@ -78,9 +81,16 @@ const packageSchema = new mongoose.Schema({
     },email:{
         type:String,
         required:true
-    }
+    },createdAt: {
+        type: Date,
+        default: Date.now,
+      },
+      updatedAt: {
+        type: Date,
+        default: Date.now,
+      },
 })
 
-const User = mongoose.model('admin', adminSchema);
-const package = mongoose.model('admin', packageSchema);
-module.exports = { admin,package};
+const admin = mongoose.model('admin', adminSchema);
+const Package = mongoose.model('package', packageSchema);
+module.exports = { admin,Package};

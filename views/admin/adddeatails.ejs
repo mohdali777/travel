@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add New Travel Item</title>
     <link rel="stylesheet" href="/adminall.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         * {
             margin: 0;
@@ -267,6 +273,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="dashboard">
     <%- include('../partials/sidebar') %>
@@ -303,13 +310,7 @@
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label class="form-label">Location on Map</label>
-                    <div class="location-picker">
-                        Map will be displayed here
-                    </div>
-                </div>
-                
+               
                 <div class="form-group">
                     <label class="form-label">Price Range *</label>
                     <div class="form-row">
@@ -390,138 +391,275 @@
                     <label class="form-label">Website</label>
                     <input type="url" class="form-input" placeholder="Enter hotel website URL">
                 </div>
-                
-                <div class="form-actions">
-                    <button class="btn btn-secondary">Cancel</button>
-                    <button class="btn btn-primary" >Add Hotel</button>
-                </div>
             </div>
             
         <script>
- let variantCount = 0; 
-function addPlace() {
-const container = document.getElementById('place-container');
-const row = document.createElement('div');
-row.classList.add('variant-row');
-variantCount++; 
+let variantCount = 0; // Initialize variantCount
+let rowImages = {}; // Object to store images for each row
+let placeImages = []; // Array to store all images for Multer
 
-row.innerHTML = `
-<div class="form-group">
-                    <label class="form-label">Place Name</label>
-                    <input type="text" class="form-input" id="place-name-${variantCount}" placeholder="Enter Place name">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Description *</label>
-                    <textarea class="form-textarea" id="place-desc-${variantCount}" placeholder="Enter place description"></textarea>
-                </div>
-                <div class="form-group">
-    <label for="image">Upload Image:</label>
-    <input type="file" id="image-${variantCount}" name="image" accept="image/*" multiple required><br><br>
- </div>
-<button type="button" class="btn btn-danger" onclick="removeVariant(this)">Remove</button>
-`;
-container.appendChild(row);
+
+function addPlace() {
+    const container = document.getElementById('place-container');
+    const row = document.createElement('div');
+    row.classList.add('variant-row');
+    variantCount++;
+
+    rowImages[variantCount] = [];
+
+    row.innerHTML = `
+        <div class="form-group">
+            <label class="form-label">Place Name</label>
+            <input type="text" class="form-input" id="place-name-${variantCount}" placeholder="Enter Place name">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Description *</label>
+            <textarea class="form-textarea" id="place-desc-${variantCount}" placeholder="Enter place description"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="image">Upload Image:</label>
+            <input type="file" id="image-${variantCount}" name="image" accept="image/*" multiple required>
+        </div>
+        <button type="button" class="btn btn-danger" onclick="removeVariant(this)">Remove</button>
+    `;
+
+    const fileInput = row.querySelector(`#image-${variantCount}`);
+
+    fileInput.addEventListener('change', (event) => {
+        const files = event.target.files;
+        if (files.length > 10) {
+            alert("You can upload a maximum of 10 images.");
+            event.target.value = ''; // Clear the input
+            return;
+        }
+
+        const validFiles = [];
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+
+            if (!file.type.startsWith('image/')) {
+                alert(`File "${file.name}" is not a valid image.`);
+                continue; 
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+                alert(`File "${file.name}" exceeds the 5MB size limit.`);
+                continue; 
+            }
+            validFiles.push(file);
+        }
+        if (validFiles.length === 0) {
+            event.target.value = ''; // Clear the input
+            return;
+        }
+        rowImages[variantCount].push(...validFiles);
+        placeImages.push(...validFiles);
+
+        console.log('Valid files:', validFiles);
+    });
+
+    container.appendChild(row);
 }
 
 function removeVariant(button) {
-button.parentElement.remove();
+    const row = button.closest('.variant-row');
+    if (row) {
+        const rowId = row.querySelector('input[type="file"]').id.split('-')[1]; 
+        delete rowImages[rowId];
+        row.remove();
+    }
 }
 
 
-async function submitTravelItem() {
-const placeName = document.getElementById("place-name").value;
-const description = document.getElementById("description").value;
-const state = document.getElementById("State").value;
-const country = document.getElementById("Country").value;
-const price = document.getElementById("price").value;
-const HotelName = document.getElementById("HOTEL-NAME").value;
-const phone = document.getElementById("phone").value;
-const email = document.getElementById("email").value;
-const amenities = [];
-const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked');
-        checkboxes.forEach(checkbox => {
-            amenities.push(checkbox.value); 
-        });
 
-console.log(amenities); 
-const fileInput = document.getElementById('image');
-    const files = fileInput.files; 
+let selectedImages = [];
+function handleFileSelection(event) {
+    const files = event.target.files;
     if (files.length > 10) {
         alert("You can upload a maximum of 10 images.");
         return;
     }
     for (let i = 0; i < files.length; i++) {
         const file = files[i];
+
         if (file.size > 5 * 1024 * 1024) {
             alert(`File "${file.name}" exceeds the 5MB size limit.`);
             return;
         }
-
-        if (!file.type.startsWith('image/')) {
+        if (!file.type.startsWith('image/')) { 
             alert(`File "${file.name}" is not a valid image.`);
             return;
         }
+        selectedImages.push(file);
     }
+    console.log('Selected images:', selectedImages);
+}
+const fileInput = document.getElementById('image');
+fileInput.addEventListener('change', handleFileSelection);
 
-    const images = Array.from(files); 
-    console.log(images); 
+async function submitTravelItem() {
 
+    const placeName = document.getElementById("place-name").value;
+    const description = document.getElementById("description").value;
+    const state = document.getElementById("State").value;
+    const country = document.getElementById("Country").value;
+    const price = document.getElementById("price").value;
+    const HotelName = document.getElementById("HOTEL-NAME").value;
+    const phone = document.getElementById("phone").value;
+    const email = document.getElementById("email").value;
 
-    const places = [];
-    const rows = document.querySelectorAll('.variant-row');
-
-    rows.forEach((row, index) => {
-        const placeName = row.querySelector(`#place-name-${index+1}`).value;
-        const placeDesc = row.querySelector(`#place-desc-${index+1}`).value;
-        const placeImage = row.querySelector(`#image-${index+1}`).files[0];
-
-        const place = {
-            placeName: placeName,
-            placeDesc: placeDesc,
-            placeImage: placeImage, 
-        };
-
-        places.push(place); 
+    const amenities = [];
+    const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked');
+    checkboxes.forEach(checkbox => {
+        amenities.push(checkbox.value);
     });
 
-const formdata = {
-    placeName:placeName,
-    description:description,
-    state:state,
-    country:country,
-    price:price,
-    HotelName:HotelName,
-    phone:phone,
-    email:email,
-    hotelFacil:amenities,
-    tourplaces:places
+    console.log(amenities);
+
+    const formData = new FormData();
+    formData.append("placeName", placeName);
+    formData.append("description", description);
+    formData.append("state", state);
+    formData.append("country", country);
+    formData.append("price", price);
+    formData.append("HotelName", HotelName);
+    formData.append("phone", phone);
+    formData.append("email", email);
+
+    formData.append("hotelFacil", JSON.stringify(amenities));
+    selectedImages.forEach((file) => {
+        formData.append('hotelImages', file); 
+    });
+
+
+    if (!placeName || !description || !state || !country || !price || !HotelName || !phone || !email) {
+    iziToast.error({
+        title: 'Error',
+        message: 'All fields are required.',
+        position: 'topRight',
+    });
+    return false;
 }
 
-console.log(formdata)
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+if (!emailRegex.test(email)) {
+    iziToast.error({
+        title: 'Error',
+        message: 'Please enter a valid email address.',
+        position: 'topRight',
+    });
+    return false;
+}
 
-try {
-        const response = await fetch('/add-datas', {
+const phoneRegex = /^\d{10}$/;
+if (!phoneRegex.test(phone)) {
+    iziToast.error({
+        title: 'Error',
+        message: 'Please enter a valid 10-digit phone number.',
+        position: 'topRight',
+    });
+    return false;
+}
+
+if (isNaN(price)) {
+    iziToast.error({
+        title: 'Error',
+        message: 'Price must be a number.',
+        position: 'topRight',
+    });
+    return false;
+}
+
+if (amenities.length === 0) {
+    iziToast.error({
+        title: 'Error',
+        message: 'Please add amenities.',
+        position: 'topRight',
+    });
+    return false;
+}
+
+if (selectedImages.length === 0) {
+    iziToast.error({
+        title: 'Error',
+        message: 'Please upload at least one image.',
+        position: 'topRight',
+    });
+    return false;
+}
+            
+    const tourPlace = [];
+    const placeRows = document.querySelectorAll('.variant-row');
+    placeRows.forEach((row, index) => {
+        const placeName = row.querySelector(`#place-name-${index + 1}`).value;
+        const placeDesc = row.querySelector(`#place-desc-${index + 1}`).value;
+        const placeImagess = rowImages[index+1] || [];
+        const fileNames = placeImagess.map(file => file.name);
+
+        if (!placeName || !placeDesc) {
+    iziToast.error({
+        title: 'Error',
+        message: 'Place name and description are required for all places.',
+        position: 'topRight',
+    });
+    return false;
+}
+
+if (placeImages.length === 0) {
+    iziToast.error({
+        title: 'Error',
+        message: 'Please upload at least one image for each place.',
+        position: 'topRight',
+    });
+    return false;
+}
+        
+        const place = {
+            placeName,
+            placeDesc,
+            placeImagesss:fileNames       
+        };
+        console.log(place);
+        
+        tourPlace.push(place);
+    });
+    console.log("place",tourPlace);
+
+    if (tourPlace.length === 0) {
+    iziToast.error({
+        title: 'Error',
+        message: 'Please add at least one Location.',
+        position: 'topRight',
+    });
+    return false;
+}
+
+    formData.append("tourPlace", JSON.stringify(tourPlace));
+
+    placeImages.forEach((file) => {
+        formData.append(`placeImages`, file); // Use the same field name for all images
+    });
+    try {
+        const response = await fetch('/admin/addDeatails', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json', 
-            },
-            body: JSON.stringify(formdata), 
+            body: formData
         });
 
-        if (response.ok) {
-            const result = await response.json();
-            console.log('Data submitted successfully:', result);
-            alert('Data submitted successfully!');
-        } else {
-            console.error('Failed to submit data:', response.statusText);
-            alert('Failed to submit data.');
+        if (!response.ok) {
+            throw new Error('Failed to submit travel item');
         }
-    } catch (error) {
-        console.error('Error submitting data:', error);
-        alert('Error submitting data.');
+
+        Swal.fire({
+        title: "Success!",
+        text: "Added Successfully", // Dynamic success message
+        icon: "success",
+        confirmButtonText: "OK"
+    }).then(()=>{
+        window.location.reload()
+    })
+} catch (error) {
+        alert(`Error: ${error.message}`);
     }
-
-
 }
 
 document.getElementById('submit-button-add').addEventListener('click', submitTravelItem);
