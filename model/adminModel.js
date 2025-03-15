@@ -92,5 +92,5 @@ const packageSchema = new mongoose.Schema({
 })
 
 const admin = mongoose.model('admin', adminSchema);
-const Package = mongoose.model('package', packageSchema);
+const Package = mongoose.model('Package', packageSchema);
 module.exports = { admin,Package};

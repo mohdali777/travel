@@ -437,8 +437,9 @@
             <div class="package-price">
                 <div class="price-amount">$<span id="package-price"><%= place.price %></span></div>
                 <div class="price-text">per person</div>
-                <a href="#" class="book-button">Book Now</a>
+                <a href="#" class="book-button" onclick="checkout('<%= place._id %>')">Book Now</a>
             </div>
+
         </div>
         
         <div class="package-content">
@@ -512,6 +513,11 @@
     </main>
 
     <script>
+
+function checkout(id){
+    window.location.href =`/checkout/${id}`
+}
+
         document.addEventListener('DOMContentLoaded', function() {
     const imageSlider = document.getElementById('image-slider');
     const sliderControls = document.getElementById('slider-controls');

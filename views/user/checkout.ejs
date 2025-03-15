@@ -1,0 +1,241 @@
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f9f9f9;
+            color: #333;
+        }
+        .container {
+            width: 900px;
+            margin: 100px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        .summary {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #2980b9;
+        }
+    </style>
+    <%- include('../partials/users/header') %>
+
+<div class="container">
+    <h1>Travel Checkout</h1>
+
+    <div class="section traveler-info">
+        <h2>Traveler Information</h2>
+        <label for="name">Full Name</label>
+        <input type="text" id="name" class="input-name" placeholder="Enter your full name" required>
+
+        <label for="email">Email Address</label>
+        <input type="email" id="email" class="input-email" placeholder="Enter your email" required>
+
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" class="input-phone" placeholder="Enter your phone number" required>
+
+        <label for="num-persons">Number of Persons</label>
+        <input type="number" id="num-persons" class="input-num-persons" value="1" min="1" onchange="changePersons('<%=package.price%>')" placeholder="Enter number of persons" required>
+
+        <label for="travel-date">Travel Date</label>
+        <input type="date" id="travel-date" class="input-travel-date"  required>
+    </div>
+
+    <div class="section payment-details">
+        <h2>Payment Details</h2>
+
+        <label for="payment-method" class="label-payment-method">Payment Method</label>
+        <select id="payment-method" class="select-payment-method" required>
+            <option value="card">Credit/Debit Card</option>
+            <option value="wallet">Wallet</option>
+            <option value="upi">UPI</option>
+            <option value="other">Other</option>
+        </select>
+        <label for="payment-amount">Payment Amount</label>
+        <input type="number" id="payment-amount" class="input-payment-amount" value="<%=package.price%>" disabled>
+    </div>
+
+    <div class="section summary" style="display: flex; justify-content: space-between;">
+        <div>
+            <h2>Order Summary</h2>
+            <p>Destination: <%=package.name%>,<%=package.state%>,<%=package.Country%></p>
+            <p>Travel Dates: </p>
+            <p id="total-price">Price: <%=package.price%></p>
+        </div>
+        <div >
+            <img src="<%=package.hotelImages[0]%>"  style="width: 100px; height:120px ;border-radius: 5px; "   alt="asdasd">
+        </div>
+    </div>
+
+    <button class="btn btn-complete-payment" onclick="book('<%=package._id %>')">Complete Payment</button>
+</div>
+
+<script>
+    function changePersons(amount){
+        const NoPeoples = document.getElementById("num-persons").value;
+        console.log(amount,NoPeoples);
+        const total = amount*NoPeoples
+        console.log(total);
+        
+         document.getElementById("payment-amount").value = total
+         document.getElementById("total-price").innerHTML = `Price:${total}`
+
+
+         function changeDate(){
+            document.getElementById("total-price").innerHTML = 11
+
+         }
+    }
+
+
+    function book(id) {
+    // Get form values
+    const name = document.getElementById("name").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const NoPeoples = document.getElementById("num-persons").value.trim();
+    const date = document.getElementById("travel-date").value.trim();
+    const method = document.getElementById("payment-method").value.trim();
+    let amount = document.getElementById("payment-amount").value.trim(); // Use innerText for displayed values
+
+    // Regular expressions for validation
+    const namePattern = /^[a-zA-Z\s]{3,}$/;  // At least 3 characters (letters and spaces only)
+    const phonePattern = /^[0-9]{10}$/;      // 10-digit phone number
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // Valid email format
+
+    // Validation checks
+    if (!name || !namePattern.test(name)) {
+        return  iziToast.error({
+        title: 'Error',
+        message: "Please enter a valid name (at least 3 letters).",
+        position: 'topRight',
+    });
+    }
+
+    if (!phone || !phonePattern.test(phone)) {
+        return  iziToast.error({
+        title: 'Error',
+        message: "Please enter a valid 10-digit phone number.",
+        position: 'topRight',
+    });
+    }
+
+    if (!email || !emailPattern.test(email)) {
+        return  iziToast.error({
+        title: 'Error',
+        message: "Please enter a valid email address.",
+        position: 'topRight',
+    });
+    }
+
+    if (!NoPeoples || isNaN(NoPeoples) || Number(NoPeoples) <= 0) {
+        return  iziToast.error({
+        title: 'Error',
+        message: "Please enter a valid number of persons.",
+        position: 'topRight',
+    });
+    }
+
+    if (!date) {
+        return  iziToast.error({
+        title: 'Error',
+        message: "Please select a travel date.",
+        position: 'topRight',
+    });
+    }
+
+    const today = new Date().toISOString().split('T')[0];
+    if (date < today) {
+        return  iziToast.error({
+        title: 'Error',
+        message: "Travel date cannot be in the past.",
+        position: 'topRight',
+    });
+    }
+
+    if (!method) {
+        return  iziToast.error({
+        title: 'Error',
+        message: "Please select a payment method.",
+        position: 'topRight',
+    });
+    }
+
+    amount = parseFloat(amount);
+    console.log(amount);
+    
+  const bookingData = {
+    name,
+    phone,
+    email,
+    NoPeoples,
+    date,
+    method,
+    amount
+  }
+
+  fetch(`/booking/${id}`,{method:"POST",headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookingData),}).then((response)=> response.json()).then((data)=>{
+            if(data.success == true){
+                Swal.fire({
+        title: "Success!",
+        text: data.message, 
+        icon: "success",
+        confirmButtonText: "OK"
+    }).then(()=>{
+        window.location.href = data.redirectUrl
+    })
+     }else{
+               iziToast.error({
+        title: 'Error',
+        message: data.message,
+        position: 'topRight',
+    });
+            }
+        }
+    )
+
+}
+
+</script>
+
+</body>
+</html>
